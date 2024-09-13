@@ -1,0 +1,142 @@
+{
+  "articles": [
+    {
+      "id": 1,
+      "libelle": "Stylo",
+      "prixUnitaire": 1.5,
+      "quantiteEnStock": 100
+    },
+    {
+      "id": 2,
+      "libelle": "Cahier",
+      "prixUnitaire": 2.0,
+      "quantiteEnStock": 200
+    }
+  ],
+  "clients": [
+    {
+      "id": 1,
+      "surnom": "Dupont",
+      "telephone": "0123456789",
+      "adresse": "12 Rue de Paris"
+    },
+    {
+      "id": 2,
+      "surnom": "Martin",
+      "telephone": "0987654321",
+      "adresse": "34 Avenue de Lyon"
+    }
+  ],
+  "dettes": [
+    {
+      "id": 1,
+      "montant": 100.0,
+      "client": {
+        "id": 1,
+        "surnom": "Dupont",
+        "telephone": "0123456789",
+        "adresse": "12 Rue de Paris"
+      }
+    },
+    {
+      "id": 2,
+      "montant": 200.0,
+      "client": {
+        "id": 2,
+        "surnom": "Martin",
+        "telephone": "0987654321",
+        "adresse": "34 Avenue de Lyon"
+      }
+    }
+  ],
+  "paiements": [
+    {
+      "id": 1,
+      "montant": 50.0,
+      "dette": {
+        "id": 1,
+        "montant": 100.0,
+        "client": {
+          "id": 1,
+          "surnom": "Dupont",
+          "telephone": "0123456789",
+          "adresse": "12 Rue de Paris"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "montant": 150.0,
+      "dette": {
+        "id": 2,
+        "montant": 200.0,
+        "client": {
+          "id": 2,
+          "surnom": "Martin",
+          "telephone": "0987654321",
+          "adresse": "34 Avenue de Lyon"
+        }
+      }
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "nom": "Alice",
+      "prenom": "Dupont",
+      "login": "alice",
+      "password": "password1",
+      "client": {
+        "id": 1,
+        "surnom": "Dupont",
+        "telephone": "0123456789",
+        "adresse": "12 Rue de Paris"
+      }
+    },
+    {
+      "id": 2,
+      "nom": "Bob",
+      "prenom": "Martin",
+      "login": "bob",
+      "password": "password2",
+      "client": {
+        "id": 2,
+        "surnom": "Martin",
+        "telephone": "0987654321",
+        "adresse": "34 Avenue de Lyon"
+      }
+    }
+  ],
+  "articleDettes": [
+    {
+      "id": 1,
+      "prixVente": 1.5,
+      "qteVente": 10,
+      "dette": {
+        "id": 1,
+        "montant": 100.0,
+        "client": {
+          "id": 1,
+          "surnom": "Dupont",
+          "telephone": "0123456789",
+          "adresse": "12 Rue de Paris"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "prixVente": 2.0,
+      "qteVente": 5,
+      "dette": {
+        "id": 2,
+        "montant": 200.0,
+        "client": {
+          "id": 2,
+          "surnom": "Martin",
+          "telephone": "0987654321",
+          "adresse": "34 Avenue de Lyon"
+        }
+      }
+    }
+  ]
+}
