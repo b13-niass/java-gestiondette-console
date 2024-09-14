@@ -8,6 +8,13 @@ import com.example.odc.repositories.ClientRepository;
 import java.util.List;
 
 public class ClientServiceImpl implements ClientRepository {
+
+    private ClientRepository repository;
+
+    public ClientServiceImpl(ClientRepository repository) {
+        this.repository = repository;
+    }
+
     @Override
     public void payDebt(Dette dette, int amount) {
 

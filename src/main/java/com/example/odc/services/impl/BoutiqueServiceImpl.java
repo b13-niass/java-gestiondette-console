@@ -2,10 +2,18 @@ package com.example.odc.services.impl;
 
 import com.example.odc.entities.impl.*;
 import com.example.odc.repositories.BoutiquierRepository;
+import com.example.odc.repositories.ClientRepository;
 
 import java.util.List;
 
 public class BoutiqueServiceImpl implements BoutiquierRepository {
+
+    private BoutiquierRepository repository;
+
+    public BoutiqueServiceImpl(BoutiquierRepository repository) {
+        this.repository = repository;
+    }
+
     @Override
     public List<Client> all() {
         return List.of();
