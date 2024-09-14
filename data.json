@@ -2,79 +2,176 @@
   "articles": [
     {
       "id": 1,
-      "libelle": "Stylo",
+      "libelle": "Stylo Bille",
       "prixUnitaire": 1.5,
       "quantiteEnStock": 100
     },
     {
       "id": 2,
-      "libelle": "Cahier",
-      "prixUnitaire": 2.0,
-      "quantiteEnStock": 200
+      "libelle": "Cahier 100 pages",
+      "prixUnitaire": 3.0,
+      "quantiteEnStock": 50
+    }
+  ],
+  "articleDettes": [
+    {
+      "id": 1,
+      "prixVente": 5.0,
+      "qteVente": 2,
+      "dette": {
+        "id": 1,
+        "montant": 20.0,
+        "client": {
+          "id": 1,
+          "surnom": "Jean",
+          "telephone": "0612345678",
+          "adresse": "123 Rue Principale",
+          "user": {
+            "id": 1,
+            "nom": "Jean",
+            "prenom": "Dupont",
+            "login": "jdupont",
+            "password": "password123",
+            "role": "CLIENT"
+          }
+        }
+      },
+      "article": {
+        "id": 1,
+        "libelle": "Stylo Bille",
+        "prixUnitaire": 1.5,
+        "quantiteEnStock": 100
+      }
     }
   ],
   "clients": [
     {
       "id": 1,
-      "surnom": "Dupont",
-      "telephone": "0123456789",
-      "adresse": "12 Rue de Paris"
+      "surnom": "Jean",
+      "telephone": "0612345678",
+      "adresse": "123 Rue Principale",
+      "user": {
+        "id": 1,
+        "nom": "Jean",
+        "prenom": "Dupont",
+        "login": "jdupont",
+        "password": "password123",
+        "role": "CLIENT"
+      }
     },
     {
       "id": 2,
-      "surnom": "Martin",
-      "telephone": "0987654321",
-      "adresse": "34 Avenue de Lyon"
+      "surnom": "Marie",
+      "telephone": "0698765432",
+      "adresse": "456 Avenue de la Liberté",
+      "user": {
+        "id": 2,
+        "nom": "Marie",
+        "prenom": "Curie",
+        "login": "mcurie",
+        "password": "securePass",
+        "role": "CLIENT"
+      }
+    },
+    {
+      "id": 3,
+      "surnom": "Paul",
+      "telephone": "0611122233",
+      "adresse": "789 Rue de l'Église"
+    },
+    {
+      "id": 4,
+      "surnom": "Sophie",
+      "telephone": "0622233344",
+      "adresse": "101 Rue des Fleurs"
+    },
+    {
+      "id": 5,
+      "surnom": "Luc",
+      "telephone": "0633344455",
+      "adresse": "11 Boulevard du Général"
     }
   ],
   "dettes": [
     {
       "id": 1,
-      "montant": 100.0,
+      "montant": 20.0,
       "client": {
         "id": 1,
-        "surnom": "Dupont",
-        "telephone": "0123456789",
-        "adresse": "12 Rue de Paris"
+        "surnom": "Jean",
+        "telephone": "0612345678",
+        "adresse": "123 Rue Principale",
+        "user": {
+          "id": 1,
+          "nom": "Jean",
+          "prenom": "Dupont",
+          "login": "jdupont",
+          "password": "password123",
+          "role": "CLIENT"
+        }
       }
     },
     {
       "id": 2,
-      "montant": 200.0,
+      "montant": 100.0,
       "client": {
         "id": 2,
-        "surnom": "Martin",
-        "telephone": "0987654321",
-        "adresse": "34 Avenue de Lyon"
+        "surnom": "Marie",
+        "telephone": "0698765432",
+        "adresse": "456 Avenue de la Liberté",
+        "user": {
+          "id": 2,
+          "nom": "Marie",
+          "prenom": "Curie",
+          "login": "mcurie",
+          "password": "securePass",
+          "role": "CLIENT"
+        }
       }
     }
   ],
   "paiements": [
     {
       "id": 1,
-      "montant": 50.0,
+      "montant": 10.0,
       "dette": {
         "id": 1,
-        "montant": 100.0,
+        "montant": 20.0,
         "client": {
           "id": 1,
-          "surnom": "Dupont",
-          "telephone": "0123456789",
-          "adresse": "12 Rue de Paris"
+          "surnom": "Jean",
+          "telephone": "0612345678",
+          "adresse": "123 Rue Principale",
+          "user": {
+            "id": 1,
+            "nom": "Jean",
+            "prenom": "Dupont",
+            "login": "jdupont",
+            "password": "password123",
+            "role": "CLIENT"
+          }
         }
       }
     },
     {
       "id": 2,
-      "montant": 150.0,
+      "montant": 50.0,
       "dette": {
         "id": 2,
-        "montant": 200.0,
+        "montant": 100.0,
         "client": {
           "id": 2,
-          "surnom": "Martin",
-          "telephone": "0987654321",
-          "adresse": "34 Avenue de Lyon"
+          "surnom": "Marie",
+          "telephone": "0698765432",
+          "adresse": "456 Avenue de la Liberté",
+          "user": {
+            "id": 2,
+            "nom": "Marie",
+            "prenom": "Curie",
+            "login": "mcurie",
+            "password": "securePass",
+            "role": "CLIENT"
+          }
         }
       }
     }
@@ -82,61 +179,51 @@
   "users": [
     {
       "id": 1,
-      "nom": "Alice",
+      "nom": "Jean",
       "prenom": "Dupont",
-      "login": "alice",
-      "password": "password1",
-      "client": {
-        "id": 1,
-        "surnom": "Dupont",
-        "telephone": "0123456789",
-        "adresse": "12 Rue de Paris"
-      }
+      "login": "jdupont",
+      "password": "password123",
+      "role": "CLIENT"
     },
     {
       "id": 2,
-      "nom": "Bob",
+      "nom": "Marie",
+      "prenom": "Curie",
+      "login": "mcurie",
+      "password": "securePass",
+      "role": "CLIENT"
+    },
+    {
+      "id": 3,
+      "nom": "Alice",
       "prenom": "Martin",
-      "login": "bob",
-      "password": "password2",
-      "client": {
-        "id": 2,
-        "surnom": "Martin",
-        "telephone": "0987654321",
-        "adresse": "34 Avenue de Lyon"
-      }
-    }
-  ],
-  "articleDettes": [
-    {
-      "id": 1,
-      "prixVente": 1.5,
-      "qteVente": 10,
-      "dette": {
-        "id": 1,
-        "montant": 100.0,
-        "client": {
-          "id": 1,
-          "surnom": "Dupont",
-          "telephone": "0123456789",
-          "adresse": "12 Rue de Paris"
-        }
-      }
+      "login": "amartin",
+      "password": "adminPass",
+      "role": "ADMIN"
     },
     {
-      "id": 2,
-      "prixVente": 2.0,
-      "qteVente": 5,
-      "dette": {
-        "id": 2,
-        "montant": 200.0,
-        "client": {
-          "id": 2,
-          "surnom": "Martin",
-          "telephone": "0987654321",
-          "adresse": "34 Avenue de Lyon"
-        }
-      }
+      "id": 4,
+      "nom": "Robert",
+      "prenom": "Smith",
+      "login": "rsmith",
+      "password": "boutique123",
+      "role": "BOUTIQUIER"
+    },
+    {
+      "id": 5,
+      "nom": "Laura",
+      "prenom": "Davis",
+      "login": "ldavis",
+      "password": "secureBoutique",
+      "role": "BOUTIQUIER"
+    },
+    {
+      "id": 6,
+      "nom": "Tom",
+      "prenom": "Johnson",
+      "login": "tjohnson",
+      "password": "adminSecure",
+      "role": "ADMIN"
     }
   ]
 }

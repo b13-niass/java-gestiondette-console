@@ -9,14 +9,13 @@ public class DatabaseFactory {
         if (databaseInstance == null) {
             if ("List".equalsIgnoreCase(type)) {
                 databaseInstance = new ListDatabase();
-            }
-            if ("JDBC".equalsIgnoreCase(type)){
+            }else if ("JDBC".equalsIgnoreCase(type)){
                 // Implementation JDBC database
-            }
-            else {
+            } else {
                 throw new IllegalArgumentException("Type de base de données non supporté : " + type);
             }
         }
+
         return databaseInstance;
     }
 }

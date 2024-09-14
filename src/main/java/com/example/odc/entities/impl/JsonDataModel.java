@@ -8,7 +8,7 @@ public class JsonDataModel {
     private List<Client> clients;
     private List<Paiement> paiements;
     private List<User> users;
-    private List<ArticleDette> articlesDette;
+    private List<ArticleDette> articleDettes;
 
     // Getters et Setters
     public List<Article> getArticles() {
@@ -51,11 +51,23 @@ public class JsonDataModel {
         this.users = users;
     }
 
-    public List<ArticleDette> getArticlesDette() {
-        return articlesDette;
+    public List<ArticleDette> getArticleDettes() {
+        return articleDettes;
     }
 
-    public void setArticlesDette(List<ArticleDette> articlesDette) {
-        this.articlesDette = articlesDette;
+    public void setArticleDettes(List<ArticleDette> articleDettes) {
+        this.articleDettes = articleDettes;
+    }
+
+    @Override
+    public String toString() {
+        return "JsonDataModel{" +
+                "articles=" + articles +
+                ", dettes=" + dettes +
+                ", clients=" + clients +
+                ", paiements=" + paiements +
+                ", users=" + users +
+                ", articleDettes=" + articleDettes +
+                '}';
     }
 }

@@ -1,8 +1,10 @@
 package com.example.odc.entities;
 
 import com.example.odc.database.DatabaseFactory;
+import com.example.odc.database.IDatabase;
 import com.example.odc.entities.impl.*;
 
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +18,10 @@ public class ModelFactory {
             synchronized (ModelFactory.class) {
                 if (!instances.containsKey(myClassName)) {
                     try {
-                        instances.put(myClassName, myClassName.getDeclaredConstructor().newInstance(DatabaseFactory.createDatabase("List")));
+                        Constructor<?> constructor = myClassName.getDeclaredConstructor(IDatabase.class);
+                        Object instance = constructor.newInstance(DatabaseFactory.createDatabase("List"));
+
+                        instances.put(myClassName,instance);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
