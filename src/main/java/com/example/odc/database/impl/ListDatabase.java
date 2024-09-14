@@ -14,7 +14,7 @@ public class ListDatabase implements IDatabase {
     private static final String DATA_FILE_PATH = "/home/no-one/Desktop/Sonatel_Academy/Java/projects/java-gestiondette-console/data.json";
 
     public ListDatabase() {
-        System.out.println(this.connect());
+//        System.out.println(this.connect());
     }
 
     @Override
