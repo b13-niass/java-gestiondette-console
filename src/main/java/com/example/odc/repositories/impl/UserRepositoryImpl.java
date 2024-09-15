@@ -20,6 +20,6 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User findUserByLogin(String login) {
         List<User> user = ModelFactory.createUser().all();
-        return user.stream().filter(u -> u.getLogin().equals(login)).findFirst().orElse(null);
+        return user.stream().filter(u -> u.getLogin().equalsIgnoreCase(login)).findFirst().orElse(null);
     }
 }

@@ -4,10 +4,11 @@ import com.example.odc.entities.impl.Client;
 import com.example.odc.entities.impl.Dette;
 import com.example.odc.entities.impl.Paiement;
 import com.example.odc.repositories.ClientRepository;
+import com.example.odc.services.ClientService;
 
 import java.util.List;
 
-public class ClientServiceImpl implements ClientRepository {
+public class ClientServiceImpl implements ClientService {
 
     private ClientRepository repository;
 

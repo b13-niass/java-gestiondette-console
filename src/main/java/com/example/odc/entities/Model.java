@@ -15,7 +15,7 @@ public abstract class Model<T> {
 
     protected List<T> data = null;
     protected JsonDataModel database;
-    protected int currentId = 1;
+    protected int currentId = 100;
     private Class<T> entityType;
 
     public Model(){}
@@ -49,12 +49,13 @@ public abstract class Model<T> {
                 .orElse(null);
     }
 
-    public void create(T entity) {
+    public T create(T entity) {
         setId(entity, currentId++);
         data.add(entity);
+        return entity;
     }
 
-    public void update(int id, T entity) {
+    public T update(int id, T entity) {
         Optional<T> existingEntity = data.stream()
                 .filter(e -> getId(e) == id)
                 .findFirst();
@@ -64,6 +65,7 @@ public abstract class Model<T> {
             setId(entity, id);
             data.set(index, entity);
         });
+        return entity;
     }
 
     public void delete(int id) {
