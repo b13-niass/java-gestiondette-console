@@ -12,6 +12,8 @@ import com.example.odc.services.BoutiquierService;
 import com.example.odc.services.ServiceFactory;
 import com.example.odc.services.UserService;
 import com.example.odc.validators.InputValidator;
+import org.fusesource.jansi.AnsiConsole;
+import static org.fusesource.jansi.Ansi.ansi;
 
 import java.util.List;
 import java.util.Scanner;
@@ -252,8 +254,14 @@ public class BoutiquierView {
         scanner.nextLine();
     }
 
-    private void clearConsole() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+    public static void clearConsole() {
+        // Activer Jansi pour permettre l'usage des séquences ANSI
+        AnsiConsole.systemInstall();
+
+        // Effacer la console et replacer le curseur en haut à gauche
+        System.out.print(ansi().eraseScreen().cursor(0, 0));
+
+        // Désactiver Jansi
+        AnsiConsole.systemUninstall();
     }
 }
