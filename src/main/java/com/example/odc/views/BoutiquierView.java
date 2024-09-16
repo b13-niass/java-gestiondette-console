@@ -1,13 +1,8 @@
 package com.example.odc.views;
 
 import com.example.odc.entities.ModelFactory;
-import com.example.odc.entities.builders.ClientBuilder;
-import com.example.odc.entities.builders.PaiementBuilder;
-import com.example.odc.entities.builders.UserBuilder;
-import com.example.odc.entities.impl.Client;
-import com.example.odc.entities.impl.Dette;
-import com.example.odc.entities.impl.Paiement;
-import com.example.odc.entities.impl.User;
+import com.example.odc.entities.builders.*;
+import com.example.odc.entities.impl.*;
 import com.example.odc.enums.Role;
 import com.example.odc.services.BoutiquierService;
 import com.example.odc.services.ServiceFactory;
@@ -16,7 +11,9 @@ import com.example.odc.validators.InputValidator;
 import org.fusesource.jansi.AnsiConsole;
 import static org.fusesource.jansi.Ansi.ansi;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class BoutiquierView {
@@ -48,6 +45,7 @@ public class BoutiquierView {
             System.out.println("********************************************");
 
             int choice = promptChoice();
+
             handleMenuChoice(choice);
         }
     }
@@ -193,10 +191,73 @@ public class BoutiquierView {
     private void createDebtForClient() {
         clearConsole();
         System.out.println("Créer une dette pour un Client:");
-        String clientName = prompt("Nom du Client: ");
-        String debtAmount = prompt("Montant de la dette: ");
-        // Implémentation pour créer une dette
-        System.out.println("Dette de " + debtAmount + " créée pour le client '" + clientName + "'.");
+        boolean clientExist = false;
+        int idClient = 0;
+        Client client = null;
+        double montantTotal = 0;
+        while (!clientExist){
+            idClient = InputValidator.getValidInteger("Entrer l'identifiant du client");
+
+            client = this.boutiquierService.find(idClient);
+            if (client == null) {
+                System.out.println("Client non trouvé. Veuillez entrer un id valide.");
+            } else {
+                    clientExist = true;
+            }
+        }
+
+        System.out.println("Saisir les articles de la dette");
+        int articleCount = 0;
+        while (articleCount <= 0) {
+            articleCount = InputValidator.getValidInteger("Combien d'articles avez-vous?");
+            if (articleCount <= 0) {
+                System.out.println("VOus devez avoir au moins un article");
+            }
+        }
+        List<ArticleDette> articleDettes = new ArrayList<>();
+        for (int i = 0; i < articleCount; i++) {
+            System.out.println("Article n°" + (i + 1));
+            boolean articleExist = false;
+            int idArticle = 0;
+            Article article = null;
+            int qteVente = 0;
+            while (!articleExist){
+                idArticle = InputValidator.getValidInteger("Entrer l'identifiant de l'article");
+                article = this.boutiquierService.findArticle(idArticle);
+                if (article == null) {
+                    System.out.println("Article non trouvé. Veuillez entrer un id valide.");
+                } else {
+                    articleExist = true;
+                }
+            }
+            do {
+                qteVente = InputValidator.getValidInteger("La quantité :");
+                if (qteVente > article.getQuantiteEnStock() || qteVente <= 0){
+                    System.out.println("La quantité acheté doit être inférieur ou égale au stock(positif)");
+                }
+            }while (qteVente > article.getQuantiteEnStock() || qteVente <= 0);
+
+            double prixVente = InputValidator.getValidAmount("Le prix :");
+            montantTotal += prixVente * qteVente;
+
+            article.setQuantiteEnStock(article.getQuantiteEnStock() - qteVente);
+
+            ModelFactory.createArticle().update(article.getId(), article);
+
+            ArticleDette artD = (new ArticleDetteBuilder())
+                    .setQteVente(qteVente)
+                    .setPrixVente(prixVente)
+                    .setArticle(article)
+                    .build();
+            articleDettes.add(artD);
+        }
+
+        Dette dette = (new DetteBuilder())
+                .setMontant(montantTotal)
+                .setClient(client)
+                .build();
+        boutiquierService.createDebt(dette, articleDettes, Optional.empty());
+        System.out.println("Dette de "+ montantTotal +" Fcfa créée pour le client '" + client.getSurnom() + "'.");
         promptReturnToMenu();
     }
 

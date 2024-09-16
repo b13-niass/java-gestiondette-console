@@ -67,8 +67,8 @@ public class BoutiquierServiceImpl implements BoutiquierService {
     }
 
     @Override
-    public Dette createDebt(Client client, Dette dette, List<ArticleDette> articleDettes, Optional<Paiement> paiement) {
-        return repository.createDebt(client, dette, articleDettes, paiement);
+    public Dette createDebt(Dette dette, List<ArticleDette> articleDettes, Optional<Paiement> paiement) {
+        return repository.createDebt(dette, articleDettes, paiement);
     }
 
     @Override

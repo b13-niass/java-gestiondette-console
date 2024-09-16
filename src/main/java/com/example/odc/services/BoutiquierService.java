@@ -16,7 +16,7 @@ public interface BoutiquierService {
     public Client update(int id, Client client);
     public void delete(int id);
     public Client createCompte(Client client, User user);
-    public Dette createDebt(Client client, Dette dette, List<ArticleDette> articleDettes, Optional<Paiement> paiement );
+    public Dette createDebt(Dette dette, List<ArticleDette> articleDettes, Optional<Paiement> paiement );
     public List<Dette> getDette(Client client);
     public List<Paiement> getPaiement(Dette dette);
     public double getMontantVerser(int id);

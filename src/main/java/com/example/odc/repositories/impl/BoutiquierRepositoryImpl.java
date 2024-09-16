@@ -24,7 +24,7 @@ public class BoutiquierRepositoryImpl implements BoutiquierRepository {
     @Override
     public Article findArticle(int id) {
         List<Article> articles = ModelFactory.createArticle().all();
-        return articles.stream().filter(a -> a.getId() == id).findFirst().get();
+        return articles.stream().filter(a -> a.getId() == id).findFirst().orElse(null);
     }
 
 
@@ -70,27 +70,18 @@ public class BoutiquierRepositoryImpl implements BoutiquierRepository {
     }
 
     @Override
-    public Dette createDebt(Client client, Dette dette, List<ArticleDette> articleDettes, Optional<Paiement> paiement) {
-        Client cli = this.find(client.getId());
-        Dette dette1 = ModelFactory.createDette().create(dette);
-        dette1.setClient(cli);
-        Dette dette2 = ModelFactory.createDette().update(dette1.getId(),dette1);
+    public Dette createDebt(Dette dette, List<ArticleDette> articleDettes, Optional<Paiement> paiement) {
 
-        articleDettes.forEach(ad -> {
-            ad.setDette(dette2);
-            Article article = this.findArticle(ad.getArticle().getId());
-            article.setQuantiteEnStock(article.getQuantiteEnStock() - ad.getQteVente());
-
-            ad.setArticle(ModelFactory.createArticle().update(article.getId(), article));
-            ModelFactory.createArticleDette().create(ad);
-        });
-
-        if(paiement.isPresent()){
-            Paiement paiement1 = ModelFactory.createPaiement().create(paiement.get());
-            paiement1.setDette(dette2);
-            ModelFactory.createPaiement().update(paiement1.getId(),paiement1);
-        }
-
+    Dette dette2 = ModelFactory.createDette().create(dette);
+    articleDettes.stream().forEach(articleDette ->{
+        articleDette.setDette(dette2);
+        ModelFactory.createArticleDette().create(articleDette);
+    });
+//        if(paiement.isPresent()){
+//            Paiement paiement1 = ModelFactory.createPaiement().create(paiement.get());
+//            paiement1.setDette(dette2);
+//            ModelFactory.createPaiement().update(paiement1.getId(),paiement1);
+//        }
         return dette2;
     }
 
