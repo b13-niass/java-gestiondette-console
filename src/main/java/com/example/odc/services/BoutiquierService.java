@@ -19,4 +19,7 @@ public interface BoutiquierService {
     public Dette createDebt(Client client, Dette dette, List<ArticleDette> articleDettes, Optional<Paiement> paiement );
     public List<Dette> getDette(Client client);
     public List<Paiement> getPaiement(Dette dette);
+    public double getMontantVerser(int id);
+    public double getMontantDu(int id);
+    public Paiement effectuerPaiement(Paiement paiement);
 }

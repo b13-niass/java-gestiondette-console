@@ -48,7 +48,7 @@ public class BoutiquierRepositoryImpl implements BoutiquierRepository {
 
     @Override
     public Client create(Client client) {
-       return ModelFactory.createClient().create(client);
+        return ModelFactory.createClient().create(client);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class BoutiquierRepositoryImpl implements BoutiquierRepository {
         ModelFactory.createUser().create(user);
         Client client1 = this.find(client.getId());
         client1.setUser(user);
-       return ModelFactory.createClient().update(client1.getId(), client1);
+        return ModelFactory.createClient().update(client1.getId(), client1);
     }
 
     @Override
@@ -105,4 +105,22 @@ public class BoutiquierRepositoryImpl implements BoutiquierRepository {
         List<Paiement> paiements = ModelFactory.createPaiement().all();
         return paiements.stream().filter(p -> p.getDette().getId() == dette.getId()).collect(Collectors.toList());
     }
+
+    @Override
+    public double getMontantVerser(int id) {
+        List<Paiement> paiements = ModelFactory.createPaiement().all();
+        return paiements.stream().filter(p -> p.getDette().getId() == id).mapToDouble(Paiement::getMontant).sum();
+    }
+
+    @Override
+    public double getMontantDu(int id) {
+        Dette dette = this.findDetteById(id);
+        return dette.getMontant() - this.getMontantVerser(id);
+    }
+
+    @Override
+    public Paiement effectuerPaiement(Paiement paiement) {
+        return ModelFactory.createPaiement().create(paiement);
+    }
+
 }

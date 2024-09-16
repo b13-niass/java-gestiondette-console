@@ -24,10 +24,10 @@ public class InputValidator {
         return name;
     }
 
-    public static double getValidAmount() {
+    public static double getValidAmount(String message) {
         double amount;
         while (true) {
-            System.out.print("Veuillez entrer un montant valide : ");
+            System.out.print(message);
             try {
                 amount = Double.parseDouble(scanner.nextLine());
                 if (amount >= 0) {

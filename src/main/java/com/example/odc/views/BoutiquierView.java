@@ -2,6 +2,7 @@ package com.example.odc.views;
 
 import com.example.odc.entities.ModelFactory;
 import com.example.odc.entities.builders.ClientBuilder;
+import com.example.odc.entities.builders.PaiementBuilder;
 import com.example.odc.entities.builders.UserBuilder;
 import com.example.odc.entities.impl.Client;
 import com.example.odc.entities.impl.Dette;
@@ -41,8 +42,9 @@ public class BoutiquierView {
             System.out.println("3- Créer un compte user pour un Client");
             System.out.println("4- Créer une dette pour un Client");
             System.out.println("5- Lister les dettes d'un Client");
-            System.out.println("6- Lister les Paiements d'une dette");
-            System.out.println("7- Logout");
+            System.out.println("6- Effectuer un paiement pour une dette");
+            System.out.println("7- Lister les Paiements d'une dette");
+            System.out.println("8- Logout");
             System.out.println("********************************************");
 
             int choice = promptChoice();
@@ -78,9 +80,12 @@ public class BoutiquierView {
                 listClientDebts();
                 break;
             case 6:
-                listDebtPayments();
+                effectuerPaiement();
                 break;
             case 7:
+                listDebtPayments();
+                break;
+            case 8:
                 logout();
                 break;
             default:
@@ -96,7 +101,7 @@ public class BoutiquierView {
         boolean phoneExist = true;
         boolean surnomExist = true;
         while (surnomExist) {
-             surnom = InputValidator.getValidName("surnom");
+            surnom = InputValidator.getValidName("surnom");
             Client user = this.boutiquierService.findBySurnom(surnom);
             if (user != null) {
                 System.out.println("Ce surnom existe déjà. Veuillez entrer un autre surnom.");
@@ -105,7 +110,7 @@ public class BoutiquierView {
             }
         }
         while (phoneExist) {
-             telephone = InputValidator.getValidPhoneNumber();
+            telephone = InputValidator.getValidPhoneNumber();
             Client user = this.boutiquierService.findByTelephone(telephone);
             if (user != null){
                 System.out.println("Ce numéro de téléphone existe déjà. Veuillez entrer un autre numéro.");
@@ -143,7 +148,7 @@ public class BoutiquierView {
         System.out.println("Créer un compte utilisateur pour un Client:");
 
         while (!clientExist){
-             idClient = InputValidator.getValidInteger("Entrer l'identifiant du client");
+            idClient = InputValidator.getValidInteger("Entrer l'identifiant du client");
 
             Client client = this.boutiquierService.find(idClient);
             if (client == null) {
@@ -160,7 +165,7 @@ public class BoutiquierView {
         String nom = InputValidator.getValidName("nom");
         String prenom = InputValidator.getValidName("prénom");
         while (loginExist) {
-             login = InputValidator.getValidName("login");
+            login = InputValidator.getValidName("login");
             User user = this.userService.findUserByLogin(login);
             if (user!= null) {
                 System.out.println("Ce login existe déjà. Veuillez entrer un autre login.");
@@ -207,13 +212,55 @@ public class BoutiquierView {
             if (client == null) {
                 System.out.println("Client non trouvé. Veuillez entrer un id valide.");
             } else {
-                    clientExist = true;
+                clientExist = true;
             }
         }
         Client client = (new ClientBuilder()).setId(idClient).build();
         List<Dette> debts = boutiquierService.getDette(client);
         PrintListView.printTable(debts);
         promptReturnToMenu();
+    }
+
+    private void effectuerPaiement() {
+        clearConsole();
+        boolean detteExist = false;
+        int idDette = 0;
+        Dette dette = null;
+        while (!detteExist){
+            idDette = InputValidator.getValidInteger("Entrer l'identifiant de la dette");
+
+            dette = this.boutiquierService.findDetteById(idDette);
+            if (dette == null) {
+                System.out.println("Dette non trouvé. Veuillez entrer un id valide.");
+            } else {
+                detteExist = true;
+            }
+        }
+        double montantDu = this.boutiquierService.getMontantDu(idDette);
+        if (montantDu != 0) {
+            System.out.println(montantDu + "\n");
+            boolean isPaiementGreater = true;
+            double montantPaiement = 0;
+            while (isPaiementGreater) {
+                montantPaiement = InputValidator.getValidAmount("Montant du paiement: ");
+                if (montantPaiement > montantDu) {
+                    System.out.println("Montant du paiement supérieur au montant dû.");
+                } else {
+                    isPaiementGreater = false;
+                }
+            }
+            Paiement paiement = (new PaiementBuilder())
+                    .setMontant(montantPaiement)
+                    .setDette(dette)
+                    .build();
+            boutiquierService.effectuerPaiement(paiement);
+            // Implémentation pour créer un compte user
+            System.out.println("Le client "+ paiement.getDette().getClient().getSurnom() +" a effectué un paiement");
+            promptReturnToMenu();
+        }else {
+            System.out.println("Cette dette est déjà payée.");
+        }
+
     }
 
     private void listDebtPayments() {
@@ -225,7 +272,7 @@ public class BoutiquierView {
         while (!detteExist){
             idDette = InputValidator.getValidInteger("Entrer l'identifiant de la dette");
 
-             dette = this.boutiquierService.findDetteById(idDette);
+            dette = this.boutiquierService.findDetteById(idDette);
             if (dette == null) {
                 System.out.println("Dette non trouvé. Veuillez entrer un id valide.");
             } else {

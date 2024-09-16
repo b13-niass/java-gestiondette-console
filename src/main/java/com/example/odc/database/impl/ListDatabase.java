@@ -11,7 +11,7 @@ public class ListDatabase implements IDatabase {
 
     public JsonDataModel listData;
 
-    private static final String DATA_FILE_PATH = "/home/no-one/Desktop/Sonatel_Academy/Java/projects/java-gestiondette-console/data.json";
+    private static final String DATA_FILE_PATH = "/Users/cheikhibrahimadieng/java-gestiondette-console/data.json";
 
     public ListDatabase() {
 //        System.out.println(this.connect());

@@ -33,7 +33,7 @@ public class BoutiquierServiceImpl implements BoutiquierService {
 
     @Override
     public Client findByTelephone(String telephone) {
-       return repository.findByTelephone(telephone);
+        return repository.findByTelephone(telephone);
     }
 
     @Override
@@ -79,5 +79,17 @@ public class BoutiquierServiceImpl implements BoutiquierService {
     @Override
     public List<Paiement> getPaiement(Dette dette) {
         return repository.getPaiement(dette);
+    }
+
+    public double getMontantVerser(int id){
+        return repository.getMontantVerser(id);
+    }
+    public double getMontantDu(int id){
+        return repository.getMontantDu(id);
+    }
+
+    @Override
+    public Paiement effectuerPaiement(Paiement paiement) {
+        return repository.effectuerPaiement(paiement);
     }
 }
