@@ -23,4 +23,5 @@ public interface BoutiquierRepository {
     public double getMontantVerser(int id);
     public double getMontantDu(int id);
     public Paiement effectuerPaiement(Paiement paiement);
+//    public List<ArticleDette> getArticleDette(int id);
 }

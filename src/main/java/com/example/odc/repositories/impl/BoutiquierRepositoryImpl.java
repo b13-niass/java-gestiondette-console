@@ -114,4 +114,9 @@ public class BoutiquierRepositoryImpl implements BoutiquierRepository {
         return ModelFactory.createPaiement().create(paiement);
     }
 
+//    @Override
+//    public List<ArticleDette> getArticleDette(int id) {
+//
+//    }
+
 }

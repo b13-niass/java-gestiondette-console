@@ -17,7 +17,7 @@
     {
       "id": 1,
       "prixVente": 5.0,
-      "qteVente": 2,
+      "qteVente": 4,
       "dette": {
         "id": 1,
         "montant": 20.0,

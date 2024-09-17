@@ -2,8 +2,12 @@ package com.example.odc.entities.impl;
 
 import com.example.odc.database.IDatabase;
 import com.example.odc.entities.Model;
+import com.example.odc.entities.ModelFactory;
 import com.example.odc.entities.builders.DetteBuilder;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Dette extends Model<Dette> {
@@ -60,5 +64,10 @@ public class Dette extends Model<Dette> {
     @Override
     protected void setId(Dette entity, int id) {
         entity.id = id;
+    }
+
+    public List<ArticleDette> getArticlesDette(int idD) {
+        List<ArticleDette> articles = ModelFactory.createArticleDette().all();
+        return articles.stream().filter(a -> a.getDette().getId() == idD).collect(Collectors.toList());
     }
 }
