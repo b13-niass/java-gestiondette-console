@@ -1,7 +1,7 @@
 package com.example.odc.views.listtemplate;
 
-import com.example.odc.entities.impl.Client;
-import com.example.odc.entities.impl.Paiement;
+import com.example.odc.entities.Client;
+import com.example.odc.entities.Paiement;
 
 import java.util.List;
 

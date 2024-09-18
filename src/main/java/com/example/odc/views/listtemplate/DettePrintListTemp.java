@@ -1,8 +1,9 @@
 package com.example.odc.views.listtemplate;
 
-import com.example.odc.entities.impl.*;
+import com.example.odc.entities.ArticleDette;
+import com.example.odc.entities.Client;
+import com.example.odc.entities.Dette;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 

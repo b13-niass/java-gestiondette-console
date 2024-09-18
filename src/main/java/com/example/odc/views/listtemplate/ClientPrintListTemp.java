@@ -1,6 +1,6 @@
 package com.example.odc.views.listtemplate;
-import com.example.odc.entities.impl.Client;
-import com.example.odc.entities.impl.User;
+import com.example.odc.entities.Client;
+import com.example.odc.entities.User;
 
 import java.lang.reflect.Field;
 import java.util.List;
