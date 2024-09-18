@@ -1,24 +1,26 @@
 package com.example.odc.repositories.jdbc;
 
 import com.example.odc.database.Database;
-import com.example.odc.entities.User;
+import com.example.odc.entities.Paiement;
 import com.example.odc.repositories.JdbcRepository;
-import com.example.odc.repositories.UserRepository;
+import com.example.odc.repositories.PaiementRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+import java.util.List;
+
 @Profile("jdbc")
 @Repository
-public class UserRepoImplJDBC extends JdbcRepository<User> implements UserRepository {
+public class PaiementRepoImplJDBC extends JdbcRepository<Paiement> implements PaiementRepository {
     private final Database database;
-    public UserRepoImplJDBC(Database database) {
+    public PaiementRepoImplJDBC(Database database) {
         super(database);
         this.database = database;
     }
 
-
     @Override
-    public User findByLogin(String login) {
-        return null;
+    public Collection<Paiement> findByDette(int id) {
+        return List.of();
     }
 }

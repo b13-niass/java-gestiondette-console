@@ -1,4 +1,7 @@
 package com.example.odc.repositories;
 
-public interface UserRepository {
+import com.example.odc.entities.User;
+
+public interface UserRepository extends Repository<User>{
+    public User findByLogin(String login);
 }

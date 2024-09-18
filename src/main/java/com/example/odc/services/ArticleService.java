@@ -1,4 +1,7 @@
 package com.example.odc.services;
 
-public interface ArticleService {
+import com.example.odc.entities.Article;
+
+public interface ArticleService extends IService<Article> {
+    public Article findByLibelle(String libelle);
 }

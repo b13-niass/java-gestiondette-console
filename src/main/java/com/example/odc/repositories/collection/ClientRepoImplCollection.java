@@ -1,20 +1,23 @@
-package com.example.odc.repositories.jdbc;
+package com.example.odc.repositories.collection;
 
-import com.example.odc.database.Database;
+import com.example.odc.entities.Article;
 import com.example.odc.entities.Client;
 import com.example.odc.repositories.ClientRepository;
-import com.example.odc.repositories.JdbcRepository;
+import com.example.odc.repositories.CollectionRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-@Profile("jdbc")
+import java.util.Collection;
+
+@Profile("collection")
+
 @Repository
-public class ClientRepoImplJDBC extends JdbcRepository<Client> implements ClientRepository {
-    private final Database database;
-    public ClientRepoImplJDBC(Database database) {
-        super(database);
-        this.database = database;
+public class ClientRepoImplCollection extends CollectionRepository<Client> implements ClientRepository {
+    private final Collection collection;
+    public ClientRepoImplCollection(Collection<Client> collection) {
+        super(collection);
+      this.collection = collection;
     }
 
     @Override

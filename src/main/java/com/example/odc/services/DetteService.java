@@ -1,8 +1,8 @@
-package com.example.odc.repositories;
+package com.example.odc.services;
 
 import com.example.odc.entities.Dette;
 
-public interface DetteRepository extends Repository<Dette> {
+public interface DetteService extends IService<Dette> {
     public double findMontantDu(int id);
     public double findMontantVerser(int id);
 }

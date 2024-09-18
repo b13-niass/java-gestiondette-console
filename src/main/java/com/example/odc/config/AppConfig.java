@@ -8,12 +8,10 @@ import org.springframework.core.io.ClassPathResource;
 
 @Configuration
 public class AppConfig {
-
     @Bean
     public static PropertySourcesPlaceholderConfigurer properties() {
         PropertySourcesPlaceholderConfigurer propertyConfigurer = new PropertySourcesPlaceholderConfigurer();
         propertyConfigurer.setLocation(new ClassPathResource("application.properties"));
         return propertyConfigurer;
     }
-
 }

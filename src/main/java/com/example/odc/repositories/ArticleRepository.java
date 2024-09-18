@@ -1,4 +1,7 @@
 package com.example.odc.repositories;
 
-public interface ArticleRepository {
+import com.example.odc.entities.Article;
+
+public interface ArticleRepository extends Repository<Article> {
+    public Article findByLibelle(String libelle);
 }

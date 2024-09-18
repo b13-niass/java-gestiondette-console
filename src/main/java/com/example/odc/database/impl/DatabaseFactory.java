@@ -11,7 +11,7 @@ import java.sql.*;
 public class DatabaseFactory implements Database {
     @Value("${database.url}")
     private String URL;
-    @Value("${database.user}")
+    @Value("${database.username}")
     private String USER;
     @Value("${database.password}")
     private String PASSWORD;
@@ -72,5 +72,4 @@ public class DatabaseFactory implements Database {
         }
         return affectedRows;
     }
-    
 }
