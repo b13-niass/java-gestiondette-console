@@ -7,29 +7,43 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
 @Component
-public class JdbcRepository<T> implements Repository<T> {
+public class JdbcIRepository<T> implements IRepository<T> {
 
     protected String tablename;
     private final Database database;
     private Class<T> entityClass;
 
     @Autowired
-    public JdbcRepository(Database database) {
+    public JdbcIRepository(Database database) {
         this.database = database;
-        this.entityClass = this.getGenericClass();
-        this.tablename = this.getGenericClass().getSimpleName().toLowerCase();
+//        System.out.println(this.database.getConnection());
     }
 
-//    private Class<T> getEntity(){
-//        return (Class<T>) ((ParameterizedType) getClass()
-//                .getGenericSuperclass())
-//                .getActualTypeArguments()[0];
-//    }
+    @SuppressWarnings("unchecked")
+    protected void resolveEntityType() {
+        Type genericSuperclass = getClass().getGenericSuperclass();
+
+        if (genericSuperclass instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
+            Type type = parameterizedType.getActualTypeArguments()[0];
+
+            if (type instanceof Class) {
+                this.entityClass = (Class<T>) type;
+                this.tablename = this.entityClass.getSimpleName().toLowerCase()+"s";
+            } else {
+                throw new IllegalStateException("The type parameter is not a class");
+            }
+        } else {
+            throw new IllegalStateException("The superclass is not parameterized");
+        }
+    }
+
 
     @Override
     public int save(T entity) {
@@ -146,30 +160,33 @@ public class JdbcRepository<T> implements Repository<T> {
         try {
             T entity = entityClass.getDeclaredConstructor().newInstance();
             Field[] fields = entityClass.getDeclaredFields();
+
             for (Field field : fields) {
                 field.setAccessible(true);
-                Object value = rs.getObject(field.getName());
-                field.set(entity, value);
+                String columnName = field.getName();
+
+                // Retrieve the column value from the ResultSet
+                Object value = rs.getObject(columnName);
+
+                // Convert BigDecimal to double if needed
+                if (field.getType() == double.class && value instanceof BigDecimal) {
+                    value = ((BigDecimal) value).doubleValue();
+                }
+
+                // Set the value on the field
+                try {
+                    field.set(entity, value);
+                } catch (IllegalAccessException e) {
+                    // Log field access issues
+                    throw new SQLException("Error setting value for field: " + columnName, e);
+                }
             }
             return entity;
         } catch (Exception e) {
-            throw new SQLException("Error mapping ResultSet to entity", e);
+            // Provide a more detailed error message
+            throw new SQLException("Error mapping ResultSet to entity: " + e.getMessage(), e);
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public Class<T> getGenericClass() {
-        Type genericSuperclass = getClass().getGenericSuperclass();
-        if (genericSuperclass instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
-            Type type = parameterizedType.getActualTypeArguments()[0];
-            if (type instanceof Class) {
-                return (Class<T>) type;
-            } else {
-                throw new IllegalStateException("The type parameter is not a class");
-            }
-        } else {
-            throw new IllegalStateException("The superclass is not parameterized");
-        }
-    }
+
 }

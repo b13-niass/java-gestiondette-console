@@ -2,7 +2,7 @@ package com.example.odc.repositories;
 
 import java.util.Collection;
 
-public interface Repository<T> {
+public interface IRepository<T> {
         int save(T entity);
         Collection<T> findAll();
         T find(int id);

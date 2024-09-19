@@ -1,8 +1,9 @@
 package com.example.odc.services.impl;
 
 import com.example.odc.entities.Article;
-import com.example.odc.repositories.ArticleRepository;
+import com.example.odc.repositories.ArticleIRepository;
 import com.example.odc.services.ArticleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -10,40 +11,42 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.List;
 
-@Service
+@Component
 public class ArticleServiceImp implements ArticleService {
-    private final ArticleRepository repository;
-    public ArticleServiceImp(@Qualifier("collection") ArticleRepository repository){
+    private final ArticleIRepository repository;
+
+    @Autowired
+    public ArticleServiceImp(@Qualifier("articleRepoImplJDBC") ArticleIRepository repository){
         this.repository = repository;
     }
 
     @Override
     public Collection<Article> all() {
-        return List.of();
+        return this.repository.findAll();
     }
 
     @Override
     public Article find(int id) {
-        return null;
+        return this.repository.find(id);
     }
 
     @Override
     public int save(Article entity) {
-        return 0;
+        return this.repository.save(entity);
     }
 
     @Override
-    public int delete(Article entity) {
-        return 0;
+    public int delete(int id) {
+        return this.repository.delete(id);
     }
 
     @Override
     public int update(int id, Article entity) {
-        return 0;
+        return this.repository.update(id, entity);
     }
 
     @Override
     public Article findByLibelle(String libelle) {
-        return null;
+        return this.findByLibelle(libelle);
     }
 }

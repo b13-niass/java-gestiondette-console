@@ -1,26 +1,27 @@
-//package com.example.odc.views.listtemplate;
-//
-//import com.example.odc.entities.ArticleDette;
-//import com.example.odc.entities.Client;
-//import com.example.odc.entities.Dette;
-//
-//import java.util.List;
-//
-//
-//public class DettePrintListTemp {
-//    public static void printTable(List<Dette> dettes) {
+package com.example.odc.views.listtemplate;
+
+import com.example.odc.entities.Article;
+import com.example.odc.entities.ArticleDette;
+import com.example.odc.entities.Client;
+import com.example.odc.entities.Dette;
+
+import java.util.Collection;
+import java.util.List;
+
+
+public class DettePrintListTemp {
+    public static void printTable(Collection<Dette> dettes) {
 //        // Afficher l'entête du tableau
 //        System.out.printf("%-5s %-20s %-10s %-15s %-15s %-20s %-15s %-15s\n",
 //                "ID Dette", "Client", "Montant Dette", "Téléphone", "Adresse",
 //                "Article", "Prix Unitaire", "Quantité Vendue");
 //        System.out.println("----------------------------------------------------------------------------------------------------------------------");
 //
-//        // Parcourir chaque dette et afficher les détails
 //        for (Dette dette : dettes) {
 //            Client client = dette.getClient();
-//            List<ArticleDette> articleDettes = dette.getArticlesDette(dette.getId()); // Supposons que vous avez une méthode pour obtenir les articles de la dette
+//            List<ArticleDette> articleDettes = dette.getArticlesDette(dette.getId());
 //
-//            boolean firstArticle = true; // Pour gérer l'affichage de la dette en première ligne seulement
+//            boolean firstArticle = true;
 //
 //            for (ArticleDette articleDette : articleDettes) {
 //                Article article = articleDette.getArticle();
@@ -48,5 +49,5 @@
 //                );
 //            }
 //        }
-//    }
-//}
+    }
+}

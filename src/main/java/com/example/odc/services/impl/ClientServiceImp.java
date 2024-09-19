@@ -1,8 +1,9 @@
 package com.example.odc.services.impl;
 
 import com.example.odc.entities.Client;
-import com.example.odc.repositories.ClientRepository;
+import com.example.odc.repositories.ClientIRepository;
 import com.example.odc.services.ClientService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -10,51 +11,52 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.List;
 
-@Service
+@Component
 public class ClientServiceImp implements ClientService {
-    private final ClientRepository clientRepository;
+    private final ClientIRepository clientRepository;
 
-    public ClientServiceImp(@Qualifier("collection") ClientRepository clientRepository) {
+    @Autowired
+    public ClientServiceImp(@Qualifier("clientRepoImplCollection") ClientIRepository clientRepository) {
         this.clientRepository = clientRepository;
     }
 
     @Override
     public Collection<Client> all() {
-        return List.of();
+        return this.clientRepository.findAll();
     }
 
     @Override
     public Client find(int id) {
-        return null;
+        return this.clientRepository.find(id);
     }
 
     @Override
     public int save(Client entity) {
-        return 0;
+        return this.clientRepository.save(entity);
     }
 
     @Override
-    public int delete(Client entity) {
-        return 0;
+    public int delete(int id) {
+        return this.clientRepository.delete(id);
     }
 
     @Override
     public int update(int id, Client entity) {
-        return 0;
+        return this.clientRepository.update(id, entity);
     }
 
     @Override
     public Client findBySurnom(String surnom) {
-        return null;
+        return this.clientRepository.findBySurnom(surnom);
     }
 
     @Override
     public Client findByTelephone(String telephone) {
-        return null;
+        return this.clientRepository.findByTelephone(telephone);
     }
 
     @Override
     public Client createAccount(Client client) {
-        return null;
+        return this.clientRepository.createAccount(client);
     }
 }
