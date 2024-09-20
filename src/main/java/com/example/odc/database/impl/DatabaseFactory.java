@@ -4,6 +4,8 @@ import com.example.odc.database.Database;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.sql.*;
 
 @Component
@@ -44,36 +46,8 @@ public class DatabaseFactory implements Database {
         return false;
     }
 
-    @Override
-    public ResultSet executeQuery(String query) {
-        ResultSet resultSet = null;
-        try {
-            Connection conn = getConnection();
-            Statement statement = conn.createStatement();
-            resultSet = statement.executeQuery(query);
-        } catch (SQLException e) {
-            System.err.println("Error executing query: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return resultSet;
-    }
-
-    @Override
-    public int executeUpdate(String query) {
-        int affectedRows = 0;
-        try {
-            Connection conn = getConnection();
-            Statement statement = conn.createStatement();
-            affectedRows = statement.executeUpdate(query);
-        } catch (SQLException e) {
-            System.err.println("Error executing update: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return affectedRows;
-    }
-
     // Method to execute a prepared query
-    public ResultSet executePreparedQuery(String sql, Object... params) {
+    public <T> T executePreparedQuery(String sql,Class<T> entityClass,  Object... params) throws SQLException {
         ResultSet resultSet = null;
         try {
             Connection conn = getConnection();
@@ -89,26 +63,63 @@ public class DatabaseFactory implements Database {
             System.err.println("Error executing prepared query: " + e.getMessage());
             e.printStackTrace();
         }
-        return resultSet;
+        return this.mapResultSetToEntity(resultSet, entityClass);
     }
 
     // Method to execute a prepared update
     public int executePreparedUpdate(String sql, Object... params) {
-        int affectedRows = 0;
+        int lastInsertedId = -1;
         try {
             Connection conn = getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            // Enable return of generated keys
+            PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-            // Set parameters
             for (int i = 0; i < params.length; i++) {
                 preparedStatement.setObject(i + 1, params[i]);
             }
 
-            affectedRows = preparedStatement.executeUpdate();
+            int affectedRows = preparedStatement.executeUpdate();
+
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        lastInsertedId = generatedKeys.getInt(1);
+                    }
+                }
+            }
         } catch (SQLException e) {
             System.err.println("Error executing prepared update: " + e.getMessage());
             e.printStackTrace();
         }
-        return affectedRows;
+        return lastInsertedId;
     }
+
+
+    private <T> T mapResultSetToEntity(ResultSet rs, Class<T> entityClass) throws SQLException {
+        try {
+            T entity = entityClass.getDeclaredConstructor().newInstance();
+            Field[] fields = entityClass.getDeclaredFields();
+
+            for (Field field : fields) {
+                field.setAccessible(true);
+                String columnName = field.getName();
+
+                Object value = rs.getObject(columnName);
+
+                if (field.getType() == double.class && value instanceof BigDecimal) {
+                    value = ((BigDecimal) value).doubleValue();
+                }
+
+                try {
+                    field.set(entity, value);
+                } catch (IllegalAccessException e) {
+                    throw new SQLException("Error setting value for field: " + columnName, e);
+                }
+            }
+            return entity;
+        } catch (Exception e) {
+            throw new SQLException("Error mapping ResultSet to entity: " + e.getMessage(), e);
+        }
+    }
+
 }

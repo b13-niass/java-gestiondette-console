@@ -12,35 +12,18 @@ import java.util.Optional;
 @Component
 public class CollectionIRepository<T> implements IRepository<T> {
 
-    private final Collection<Article> collectionArticle;
-    private final Collection<Client> collectionClient;
-    private final Collection<Dette> collectionDette;
-    private final Collection<User> collectionUser;
-    private final Collection<Paiement> collectionPaiement;
-    private final Collection<ArticleDette> collectionArticleDette;
+    private final Collection<T> collection;
 
     private Class<T> entityClass;
 
     @SuppressWarnings("unchecked")
-    public CollectionIRepository(Collection<Article> collectionArticle,
-                                 Collection<Client> collectionClient,
-                                 Collection<Dette> collectionDette,
-                                 Collection<User> collectionUser,
-                                 Collection<ArticleDette> collectionArticleDette,
-                                 Collection<Paiement> collectionPaiement) {
-        this.collectionArticle = collectionArticle;
-        this.collectionClient = collectionClient;
-        this.collectionDette = collectionDette;
-        this.collectionUser = collectionUser;
-        this.collectionArticleDette = collectionArticleDette;
-        this.collectionPaiement = collectionPaiement;
-//        resolveEntityType(); // Initialize the entity type dynamically
+    public CollectionIRepository(Collection<T> collection) {
+        this.collection = collection;
     }
 
 
     @Override
     public int save(T entity) {
-        Collection<T> collection = getCollectionForEntity();
         if (collection != null && collection.add(entity)) {
             return 1; // Successfully added
         }
@@ -49,7 +32,6 @@ public class CollectionIRepository<T> implements IRepository<T> {
 
     @Override
     public Collection<T> findAll() {
-        Collection<T> collection = getCollectionForEntity();
         if (collection != null) {
             return collection;
         }
@@ -58,7 +40,6 @@ public class CollectionIRepository<T> implements IRepository<T> {
 
     @Override
     public T find(int id) {
-        Collection<T> collection = getCollectionForEntity();
         if (collection != null) {
             Optional<T> foundEntity = collection.stream()
                     .filter(entity -> getIdValue(entity) == id)
@@ -70,7 +51,6 @@ public class CollectionIRepository<T> implements IRepository<T> {
 
     @Override
     public int update(int id, T entity) {
-        Collection<T> collection = getCollectionForEntity();
         if (collection != null) {
             T existingEntity = find(id);
             if (existingEntity != null) {
@@ -84,7 +64,6 @@ public class CollectionIRepository<T> implements IRepository<T> {
 
     @Override
     public int delete(int id) {
-        Collection<T> collection = getCollectionForEntity();
         if (collection != null) {
             T entityToDelete = find(id);
             if (entityToDelete != null) {
@@ -104,25 +83,6 @@ public class CollectionIRepository<T> implements IRepository<T> {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException("Unable to get 'id' field from entity.", e);
         }
-    }
-
-    // Get the appropriate collection based on the entity type
-    @SuppressWarnings("unchecked")
-    private Collection<T> getCollectionForEntity() {
-        if (entityClass.equals(Article.class)) {
-            return (Collection<T>) collectionArticle;
-        } else if (entityClass.equals(Client.class)) {
-            return (Collection<T>) collectionClient;
-        } else if (entityClass.equals(Dette.class)) {
-            return (Collection<T>) collectionDette;
-        } else if (entityClass.equals(User.class)) {
-            return (Collection<T>) collectionUser;
-        } else if (entityClass.equals(ArticleDette.class)) {
-            return (Collection<T>) collectionArticleDette;
-        } else if (entityClass.equals(Paiement.class)) {
-            return (Collection<T>) collectionPaiement;
-        }
-        throw new IllegalArgumentException("No collection available for entity type: " + entityClass.getSimpleName());
     }
 
     // Resolve the entity type using reflection

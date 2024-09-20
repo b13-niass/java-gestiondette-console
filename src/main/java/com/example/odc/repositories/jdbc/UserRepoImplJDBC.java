@@ -2,14 +2,10 @@ package com.example.odc.repositories.jdbc;
 
 import com.example.odc.database.Database;
 import com.example.odc.entities.User;
-import com.example.odc.enums.Role;
 import com.example.odc.repositories.JdbcIRepository;
 import com.example.odc.repositories.UserIRepository;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Component
@@ -21,20 +17,15 @@ public class UserRepoImplJDBC extends JdbcIRepository<User> implements UserIRepo
         this.database = database;
     }
 
-
     @Override
     public boolean authenticate(String username, String password) {
-        String sql = "SELECT COUNT(*) FROM users WHERE login =? AND password =?";
-
-        try (ResultSet resultSet = database.executePreparedQuery(sql, username, password)) {
-            if (resultSet.next()) {
-                return resultSet.getInt(1) > 0;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        String sql = "SELECT * FROM users WHERE login =? AND password =?";
+        try {
+            User user = this.database.executePreparedQuery(sql, User.class, username, password);
+            return user != null;
+        }catch (SQLException e){
+            return false;
         }
-
-        return false;
     }
 
     @Override
@@ -42,20 +33,11 @@ public class UserRepoImplJDBC extends JdbcIRepository<User> implements UserIRepo
         User user = null;
         String sql = "SELECT * FROM users WHERE login = ?";
 
-        try (ResultSet resultSet = database.executePreparedQuery(sql, login)) {
-            if (resultSet.next()) {
-                user = new User();
-                user.setId(resultSet.getInt("id"));
-                user.setNom(resultSet.getString("nom"));
-                user.setPrenom(resultSet.getString("prenom"));
-                user.setLogin(resultSet.getString("login"));
-                user.setPassword(resultSet.getString("password"));
-                user.setRole(Role.valueOf(resultSet.getString("role"))); // Assuming User.Role is an enum
-            }
+        try{
+            user = database.executePreparedQuery(sql, User.class, login);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
         return user;
     }
 

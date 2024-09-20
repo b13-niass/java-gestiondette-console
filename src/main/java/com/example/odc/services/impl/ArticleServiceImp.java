@@ -15,7 +15,6 @@ import java.util.List;
 public class ArticleServiceImp implements ArticleService {
     private final ArticleIRepository repository;
 
-    @Autowired
     public ArticleServiceImp(@Qualifier("articleRepoImplJDBC") ArticleIRepository repository){
         this.repository = repository;
     }

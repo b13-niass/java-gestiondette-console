@@ -18,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 @Component
@@ -36,9 +37,9 @@ public class DetteRepoImplJDBC extends JdbcIRepository<Dette> implements DetteIR
     public int saveDette(Dette entity, Collection<ArticleDette> articleDettes, Optional<Paiement> paiementOptional) {
         // with SQL
         String sql = "INSERT INTO dettes (montant, client_id) VALUES (?,?) RETURNING id";
-        try (ResultSet resultSet = database.executePreparedQuery(sql, entity.getMontant(), entity.getClient().getId())) {
-            if (resultSet.next()) {
-                entity.setId(resultSet.getInt("id"));
+        try {
+            Dette dette = database.executePreparedQuery(sql, Dette.class, entity.getMontant(), entity.getClient().getId());
+            if (dette != null) {
                 for (ArticleDette articleDette : articleDettes) {
                     articleDette.setDette(entity);
                     ApplicationContextProvider.getBean(ArticleDetteService.class).save(articleDette);
@@ -58,23 +59,20 @@ public class DetteRepoImplJDBC extends JdbcIRepository<Dette> implements DetteIR
     @Override
     public double findMontantDu(int id) {
         String sql = "SELECT montant FROM dettes WHERE id = ?";
-        try (ResultSet resultSet = database.executePreparedQuery(sql, id)) {
-            if (resultSet.next()) {
-                return resultSet.getDouble("montant");
-            }
+        try {
+            Dette dette = database.executePreparedQuery(sql, Dette.class ,id);
+            return dette.getMontant() - this.findMontantVerser(dette.getId());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return 0;
     }
 
     @Override
     public double findMontantVerser(int id) {
-        String sql = "SELECT SUM(montant) AS total_verser FROM paiements WHERE dette_id = ?";
-        try (ResultSet resultSet = database.executePreparedQuery(sql, id)) {
-            if (resultSet.next()) {
-                return resultSet.getDouble("total_verser");
-            }
+        String sql = "SELECT SUM(montant) AS montant FROM paiements WHERE dette_id = ?";
+        try{
+            Paiement paiement = database.executePreparedQuery(sql, Paiement.class ,id);
+            return paiement.getMontant(); // If null, return 0
         } catch (SQLException e) {
             System.err.println("Error fetching amount paid: " + e.getMessage());
             e.printStackTrace();
@@ -85,27 +83,10 @@ public class DetteRepoImplJDBC extends JdbcIRepository<Dette> implements DetteIR
     @Override
     public Collection<Dette> findByClient(int clientId) {
         String sql = "SELECT * FROM dettes WHERE client_id = ?";
-
-        try (PreparedStatement ps = database.getConnection().prepareStatement(sql)) {
-            ps.setInt(1, clientId); // Set client_id as a parameter
-
-            try (ResultSet resultSet = ps.executeQuery()) {
-                Collection<Dette> dettes = new ArrayList<>();
-
-                while (resultSet.next()) {
-                    Dette dette = Dette.builder()
-                            .id(resultSet.getInt("id"))
-                            .montant(resultSet.getDouble("montant"))
-                            .client(clientService.find(resultSet.getInt("client_id"))) // Assume clientService is injected
-                            .build();
-
-                    dettes.add(dette);
-                }
-
-                return dettes;
-            }
+        try {
+            return Collections.singleton(database.executePreparedQuery(sql, Dette.class, clientId));
         } catch (SQLException e) {
-            throw new RuntimeException("Error while retrieving dettes for client: " + clientId, e);
+            throw new RuntimeException(e);
         }
     }
 }

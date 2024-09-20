@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 @Component
 public class JdbcIRepository<T> implements IRepository<T> {
@@ -22,7 +23,6 @@ public class JdbcIRepository<T> implements IRepository<T> {
     @Autowired
     public JdbcIRepository(Database database) {
         this.database = database;
-//        System.out.println(this.database.getConnection());
     }
 
     @SuppressWarnings("unchecked")
@@ -44,7 +44,6 @@ public class JdbcIRepository<T> implements IRepository<T> {
         }
     }
 
-
     @Override
     public int save(T entity) {
         StringBuilder query = new StringBuilder("INSERT INTO " + tablename + " (");
@@ -64,34 +63,17 @@ public class JdbcIRepository<T> implements IRepository<T> {
         valuesPart.append(")");
         query.append(valuesPart);
 
-        try (Connection conn = database.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query.toString())) {
-
-            for (int i = 0; i < fields.length; i++) {
-                stmt.setObject(i + 1, fields[i].get(entity));
-            }
-
-           return stmt.executeUpdate();
-        } catch (SQLException | IllegalAccessException e) {
-            e.printStackTrace();
-            return 0;
-        }
+       return this.database.executePreparedUpdate(query.toString(), entity);
     }
 
     @Override
     public Collection<T> findAll() {
-        Collection<T> results = new ArrayList<>();
+        Collection<T> results;
         String query = "SELECT * FROM " + tablename;
-        try (Connection conn = database.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-
-            while (rs.next()) {
-                T entity = mapResultSetToEntity(rs);
-                results.add(entity);
-            }
+        try {
+            results = Collections.singleton(this.database.executePreparedQuery(query, this.entityClass));
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return results;
     }
@@ -100,14 +82,8 @@ public class JdbcIRepository<T> implements IRepository<T> {
     public T find(int id) {
         T entity = null;
         String query = "SELECT * FROM " + tablename + " WHERE id = ?";
-        try (Connection conn = database.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                entity = mapResultSetToEntity(rs);
-            }
+        try {
+            entity = this.database.executePreparedQuery(query, this.entityClass);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -126,67 +102,13 @@ public class JdbcIRepository<T> implements IRepository<T> {
             }
         }
         query.append(" WHERE id = ?");
-
-        try (Connection conn = database.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query.toString())) {
-
-            for (int i = 0; i < fields.length; i++) {
-                stmt.setObject(i + 1, fields[i].get(entity));
-            }
-            stmt.setInt(fields.length + 1, id);
-
-            return stmt.executeUpdate();
-        } catch (SQLException | IllegalAccessException e) {
-            e.printStackTrace();
-            return 0;
-        }
+        return this.database.executePreparedUpdate(query.toString(),id,entity);
     }
 
     @Override
     public int delete(int id) {
         String query = "DELETE FROM " + tablename + " WHERE id = ?";
-        try (Connection conn = database.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-
-            stmt.setInt(1, id);
-           return stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return 0;
-        }
+        return this.database.executePreparedUpdate(query, id);
     }
-
-    private T mapResultSetToEntity(ResultSet rs) throws SQLException {
-        try {
-            T entity = entityClass.getDeclaredConstructor().newInstance();
-            Field[] fields = entityClass.getDeclaredFields();
-
-            for (Field field : fields) {
-                field.setAccessible(true);
-                String columnName = field.getName();
-
-                // Retrieve the column value from the ResultSet
-                Object value = rs.getObject(columnName);
-
-                // Convert BigDecimal to double if needed
-                if (field.getType() == double.class && value instanceof BigDecimal) {
-                    value = ((BigDecimal) value).doubleValue();
-                }
-
-                // Set the value on the field
-                try {
-                    field.set(entity, value);
-                } catch (IllegalAccessException e) {
-                    // Log field access issues
-                    throw new SQLException("Error setting value for field: " + columnName, e);
-                }
-            }
-            return entity;
-        } catch (Exception e) {
-            // Provide a more detailed error message
-            throw new SQLException("Error mapping ResultSet to entity: " + e.getMessage(), e);
-        }
-    }
-
 
 }

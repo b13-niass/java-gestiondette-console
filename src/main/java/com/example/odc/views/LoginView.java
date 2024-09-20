@@ -33,12 +33,12 @@ public class LoginView {
         System.out.println("         Veuillez vous connecter      ");
         System.out.println("************************************");
 
-//        while (!loggedIn) {
-//            String username = prompt("Nom d'utilisateur : ");
-//            String password = promptPassword("Mot de passe : ");
-//
-//            handleLogin(username, password);
-//        }
+        while (!loggedIn) {
+            String username = prompt("Nom d'utilisateur : ");
+            String password = promptPassword("Mot de passe : ");
+
+            handleLogin(username, password);
+        }
         this.authUser = User.builder().role(Role.BOUTIQUIER).build();
         // Handle role-based logic after successful login
         if (this.authUser != null) {

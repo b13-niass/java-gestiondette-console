@@ -1,5 +1,6 @@
 package com.example.odc.repositories;
 
+import java.sql.SQLException;
 import java.util.Collection;
 
 public interface IRepository<T> {

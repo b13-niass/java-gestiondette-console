@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -25,21 +26,11 @@ public class PaiementRepoImplJDBC extends JdbcIRepository<Paiement> implements P
 
     @Override
     public Collection<Paiement> findByDette(int id) {
-        List<Paiement> paiements = new ArrayList<>();
         String sql = "SELECT * FROM paiements WHERE dette_id = ?";
-
-        try (ResultSet resultSet = database.executePreparedQuery(sql, id)) {
-            while (resultSet.next()) {
-                Paiement paiement = new Paiement();
-                paiement.setId(resultSet.getInt("id"));
-                paiement.setMontant(resultSet.getDouble("montant"));
-                paiement.getDette().setId(resultSet.getInt("dette_id")); // Assuming you have this field in Paiement class
-                paiements.add(paiement);
-            }
+        try{
+            return Collections.singleton(database.executePreparedQuery(sql, Paiement.class, id));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-        return paiements;
     }
 }

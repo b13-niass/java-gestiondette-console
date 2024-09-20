@@ -25,24 +25,13 @@ public class ClientRepoImplJDBC extends JdbcIRepository<Client> implements Clien
     public Client findBySurnom(String surnom) {
         Client client = null;
         String sql = "SELECT * FROM clients WHERE surnom = ?";
-
+        Client c = Client.builder().surnom(surnom).build();
         try {
-            ResultSet resultSet = database.executePreparedQuery(sql, surnom);
-
-            if (resultSet.next()) {
-                client = Client.builder()
-                        .id(resultSet.getInt("id"))
-                        .surnom(resultSet.getString("surnom"))
-                        .telephone(resultSet.getString("telephone"))
-                        .adresse(resultSet.getString("adresse"))
-                        .user(resultSet.getObject("user", User.class)) // Adapt this based on your User object retrieval
-                        .build();
-            }
+           client = this.database.executePreparedQuery(sql, Client.class, c);
         } catch (SQLException e) {
             System.err.println("Error finding client by surnom: " + e.getMessage());
             e.printStackTrace();
         }
-
         return client;
     }
 
@@ -50,24 +39,13 @@ public class ClientRepoImplJDBC extends JdbcIRepository<Client> implements Clien
     public Client findByTelephone(String telephone) {
         Client client = null;
         String sql = "SELECT * FROM clients WHERE telephone = ?";
-
+        Client c = Client.builder().telephone(telephone).build();
         try {
-            ResultSet resultSet = database.executePreparedQuery(sql, telephone);
-
-            if (resultSet.next()) {
-                client = Client.builder()
-                        .id(resultSet.getInt("id"))
-                        .surnom(resultSet.getString("surnom"))
-                        .telephone(resultSet.getString("telephone"))
-                        .adresse(resultSet.getString("adresse"))
-                        .user(resultSet.getObject("user", User.class)) // Adapt this based on your User object retrieval
-                        .build();
-            }
+            client = database.executePreparedQuery(sql, Client.class ,c);
         } catch (SQLException e) {
             System.err.println("Error finding client by telephone: " + e.getMessage());
             e.printStackTrace();
         }
-
         return client;
     }
 
@@ -83,23 +61,20 @@ public class ClientRepoImplJDBC extends JdbcIRepository<Client> implements Clien
 
         try {
             // Check if the user already exists
-            try (ResultSet userResultSet = database.executePreparedQuery(userCheckSql, user.getLogin())) {
-                if (userResultSet.next()) {
+            User user1 = database.executePreparedQuery(userCheckSql,User.class, user.getLogin());
+                if (user1 != null) {
                     // User exists
-                    userId = userResultSet.getInt("id");
+                    userId = user1.getId();
                 } else {
-                    // User does not exist, create the user
                     String userInsertSql = "INSERT INTO users (nom, prenom, login, password, role) VALUES (?, ?, ?, ?, ?) RETURNING id";
                     userId = database.executePreparedUpdate(userInsertSql, user.getNom(), user.getPrenom(), user.getLogin(), user.getPassword(), user.getRole().name());
                 }
-            }
 
-            // Update the existing client with the new user ID
+
             String clientUpdateSql = "UPDATE clients SET user_id = ? WHERE id = ?";
             int updatedRows = database.executePreparedUpdate(clientUpdateSql, userId, client.getId());
 
             if (updatedRows > 0) {
-                // Return the updated client object with the new user ID
                 return client.toBuilder().user(user).build();
             } else {
                 throw new SQLException("Failed to update client.");
@@ -110,4 +85,5 @@ public class ClientRepoImplJDBC extends JdbcIRepository<Client> implements Clien
             return null; // Handle the error as appropriate
         }
     }
+
 }

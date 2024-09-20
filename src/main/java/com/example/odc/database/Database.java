@@ -2,12 +2,11 @@ package com.example.odc.database;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public interface Database {
-    public Connection getConnection();
-    public boolean closeConnection();
-    public ResultSet executeQuery(String query);
-    public int executeUpdate(String query);
-    public int executePreparedUpdate(String sql, Object... params);
-    public ResultSet executePreparedQuery(String sql, Object... params);
+     Connection getConnection();
+     boolean closeConnection();
+     int executePreparedUpdate(String sql, Object... params);
+     <T> T executePreparedQuery(String sql, Class<T> entityClass, Object... params) throws SQLException;
 }
